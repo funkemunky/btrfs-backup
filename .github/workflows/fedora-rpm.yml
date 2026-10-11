@@ -46,10 +46,14 @@ jobs:
             libplasma-devel \
             qt6-qtbase-devel \
             qt6-qtdeclarative-devel
+      - name: Install GNOME build dependencies
+        run: dnf install --assumeyes gjs glib2-devel gtk4 libadwaita python3-gobject nautilus-python
       - name: Build RPMs and run CTest
         run: python3 tools/build_fedora_rpm.py
       - name: Build optional KDE RPM
         run: python3 tools/build_fedora_kde_rpm.py
+      - name: Build optional GNOME RPM
+        run: python3 tools/build_fedora_gnome_rpm.py
       - name: Verify checksums
         run: cd dist/fedora && sha256sum --check SHA256SUMS
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -76,19 +80,22 @@ jobs:
           cd artifacts
           sha256sum --check SHA256SUMS
           shopt -s nullglob
-          packages=(btrfs-backup-[0-9]*.fc44.*.rpm btrfs-backup-kde-*.fc44.*.rpm)
+          packages=(btrfs-backup-[0-9]*.fc44.*.rpm btrfs-backup-kde-*.fc44.*.rpm btrfs-backup-gnome-*.fc44.*.rpm)
           binaries=()
           for package in "${packages[@]}"; do
             [[ "$package" == *.src.rpm ]] || binaries+=("$package")
           done
-          [[ ${#binaries[@]} -eq 2 ]]
+          [[ ${#binaries[@]} -eq 3 ]]
           dnf install --assumeyes "./${binaries[@]}"
           rpm --verify btrfs-backup
           rpm --verify btrfs-backup-kde
+          rpm --verify btrfs-backup-gnome
           btrfs-backup --help
           btrfs-backupctl --help
           btrfs-backupd --help
           btrfs-backup-kde-restore --help
+          btrfs-backup-gnome --help
+          btrfs-backup-gnome-restore --help
           test -f /usr/lib/systemd/system/btrfs-backupd.service
           test -f /usr/lib/tmpfiles.d/btrfs-backup.conf
           test "$(stat -c '%U:%G:%a' /etc/btrfs-backup/hooks.d)" = root:root:755

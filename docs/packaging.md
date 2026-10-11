@@ -110,11 +110,17 @@ and source checksums remain tied to the release artifacts.
 Fedora 44 is the current Fedora baseline. The native RPM path uses
 `packaging/rpm/btrfs-backup.spec.in` and `python3 tools/build_fedora_rpm.py`
 to build an SRPM and base binary RPM with Fedora dependency resolution,
-filesystem macros and `%check`. `python3 tools/build_fedora_kde_rpm.py` builds
-the optional KDE RPM, which requires the base package. The dedicated `Fedora RPM`
-workflow runs on pushes, pull requests and manual dispatch; it preserves
-checksummed build artifacts and installs both RPMs in a fresh Fedora 44
-container.
+filesystem macros and `%check`. `python3 tools/build_fedora_kde_rpm.py` and
+`python3 tools/build_fedora_gnome_rpm.py` build the optional KDE and GNOME RPMs;
+each requires the matching base package. The GNOME builder enables
+`BUILD_GNOME_INTEGRATION`, builds the `GNOMEIntegration` CPack component and
+checks that the package declares its base and GNOME runtime dependencies. Both
+integration builders add their RPMs to `SHA256SUMS` in `dist/fedora/`. Each can
+write to another artifact directory with `--dist-dir PATH`.
+
+The dedicated `Fedora RPM` workflow runs on pushes, pull requests and manual
+dispatch; it preserves checksummed build artifacts and installs the base, KDE
+and GNOME RPMs in a fresh Fedora 44 container.
 
 See the [RPM build guide](../packaging/rpm/README.md) for native builds, Mock and
 container commands. This path is separate from `tools/release.py --target rpm`,

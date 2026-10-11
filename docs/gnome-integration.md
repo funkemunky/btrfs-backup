@@ -41,13 +41,23 @@ must discover the installed extension before `gnome-extensions enable` can use
 it. Put the installation's `bin` directory on the graphical session's `PATH`.
 Restart Files after installing its Python adapter.
 
-For a package installation, configure with `-DCMAKE_INSTALL_PREFIX=/usr` and
-`-DBUILD_GNOME_INTEGRATION=ON`, build, then package the `GNOMEIntegration` CPack
-component. For example:
+For a Fedora 44 RPM, install the GNOME build dependencies and run the maintained
+builder. It builds the Release component under `/usr`, verifies RPM metadata and
+runtime requirements, and adds the artifact to `dist/fedora/SHA256SUMS`:
 
 ```bash
-cpack --config build/gnome-debug/CPackConfig.cmake -G RPM \
-  -D CPACK_COMPONENTS_ALL=GNOMEIntegration
+sudo dnf install gjs glib2-devel gtk4 libadwaita python3-gobject nautilus-python
+python3 tools/build_fedora_gnome_rpm.py
+```
+
+Install the GNOME component with its matching base RPM so DNF can resolve the
+manager dependency:
+
+```bash
+version=$(cat VERSION)
+sudo dnf install \
+  "dist/fedora/btrfs-backup-${version}-1.fc44.$(uname -m).rpm" \
+  "dist/fedora/btrfs-backup-gnome-${version}-1.fc44.$(uname -m).rpm"
 ```
 
 RPM and Debian components have their own GNOME runtime dependencies and require

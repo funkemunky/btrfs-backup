@@ -39,6 +39,27 @@ then run:
 python3 tools/build_fedora_kde_rpm.py
 ```
 
+To produce the GNOME 50 integration package, install its Fedora runtime and
+build tools, then run:
+
+```bash
+sudo dnf install gjs glib2-devel gtk4 libadwaita python3-gobject nautilus-python
+python3 tools/build_fedora_gnome_rpm.py
+```
+
+This writes `btrfs-backup-gnome-<version>-1.fc44.<arch>.rpm` into
+`dist/fedora/`. The package requires the matching `btrfs-backup` package plus
+GNOME Shell 50, GJS, Python GObject, GTK 4 and libadwaita. Nautilus Python is a
+weak dependency for the Files previous versions action. Install the base and
+GNOME RPM together so DNF can resolve the package dependency:
+
+```bash
+version=$(cat VERSION)
+sudo dnf install \
+  "dist/fedora/btrfs-backup-${version}-1.fc44.$(uname -m).rpm" \
+  "dist/fedora/btrfs-backup-gnome-${version}-1.fc44.$(uname -m).rpm"
+```
+
 This creates `btrfs-backup-kde-<version>-1.fc44.<arch>.rpm`, requires the
 matching `btrfs-backup` base package, and adds itself to the checksum manifest.
 Install both packages together so DNF can resolve the package dependency:

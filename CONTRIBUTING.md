@@ -66,11 +66,12 @@ Install the Fedora dependency sets in the
 same GCC, Clang, KDE and quality presets described above. Build RPM changes with
 `python3 tools/build_fedora_rpm.py`; the spec runs the unprivileged CTest suite
 in `%check`. Build the optional KDE package with
-`python3 tools/build_fedora_kde_rpm.py`. See the
+`python3 tools/build_fedora_kde_rpm.py` and the GNOME package with
+`python3 tools/build_fedora_gnome_rpm.py`. See the
 [RPM guide](packaging/rpm/README.md) for build dependencies, SRPMs, Mock rebuilds
 and clean-container validation.
 
-The `Fedora RPM` workflow builds both packages on Fedora 44 and verifies their
+The `Fedora RPM` workflow builds all three packages on Fedora 44 and verifies their
 installation in a fresh Fedora 44 container for pushes and pull requests.
 Include the Fedora
 release, architecture, test results and any untested runtime behavior in your
