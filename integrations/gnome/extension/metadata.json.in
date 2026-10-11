@@ -1,0 +1,10 @@
+{
+  "uuid": "btrfs-backup@btrfsbackup.github.io",
+  "name": "Btrfs Backup",
+  "description": "Backup status, progress, notifications, profile management and restore",
+  "shell-version": ["50"],
+  "version": 1,
+  "version-name": "@PROJECT_VERSION@",
+  "settings-schema": "io.github.btrfsbackup.gnome",
+  "url": "https://github.com/funkemunky/btrfs-backup"
+}

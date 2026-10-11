@@ -1,0 +1,99 @@
+# SPDX-FileCopyrightText: 2026 Kamil Piwowarski <kapiwko@gmail.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+name: Fedora RPM
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Fedora 44 RPM build
+    runs-on: ubuntu-24.04
+    container: fedora:44
+    timeout-minutes: 45
+    steps:
+      - name: Install packaging tools
+        run: dnf install --assumeyes git python3 rpm-build dnf5-plugins
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Trust the container workspace
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      - name: Prepare source RPM
+        run: python3 tools/build_fedora_rpm.py --srpm-only
+      - name: Install spec build dependencies
+        run: dnf builddep --assumeyes dist/fedora/btrfs-backup.spec
+      - name: Install KDE build dependencies
+        run: |
+          dnf install --assumeyes \
+            extra-cmake-modules \
+            kf6-kcmutils-devel \
+            kf6-kcoreaddons-devel \
+            kf6-kconfig-devel \
+            kf6-kio-devel \
+            kf6-kirigami-devel \
+            kf6-kjobwidgets-devel \
+            kf6-ki18n-devel \
+            kf6-knotifications-devel \
+            kf6-kpackage-devel \
+            kf6-krunner-devel \
+            kf6-kservice-devel \
+            kf6-kwidgetsaddons-devel \
+            libplasma-devel \
+            qt6-qtbase-devel \
+            qt6-qtdeclarative-devel
+      - name: Build RPMs and run CTest
+        run: python3 tools/build_fedora_rpm.py
+      - name: Build optional KDE RPM
+        run: python3 tools/build_fedora_kde_rpm.py
+      - name: Verify checksums
+        run: cd dist/fedora && sha256sum --check SHA256SUMS
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: fedora-44-rpms
+          path: dist/fedora/
+          if-no-files-found: error
+          compression-level: 0
+
+  install:
+    name: Fedora 44 RPM install
+    needs: build
+    runs-on: ubuntu-24.04
+    container: fedora:44
+    timeout-minutes: 15
+    steps:
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: fedora-44-rpms
+          path: artifacts
+      - name: Verify and install base RPM in a clean container
+        shell: bash
+        run: |
+          cd artifacts
+          sha256sum --check SHA256SUMS
+          shopt -s nullglob
+          packages=(btrfs-backup-[0-9]*.fc44.*.rpm btrfs-backup-kde-*.fc44.*.rpm)
+          binaries=()
+          for package in "${packages[@]}"; do
+            [[ "$package" == *.src.rpm ]] || binaries+=("$package")
+          done
+          [[ ${#binaries[@]} -eq 2 ]]
+          dnf install --assumeyes "./${binaries[@]}"
+          rpm --verify btrfs-backup
+          rpm --verify btrfs-backup-kde
+          btrfs-backup --help
+          btrfs-backupctl --help
+          btrfs-backupd --help
+          btrfs-backup-kde-restore --help
+          test -f /usr/lib/systemd/system/btrfs-backupd.service
+          test -f /usr/lib/tmpfiles.d/btrfs-backup.conf
+          test "$(stat -c '%U:%G:%a' /etc/btrfs-backup/hooks.d)" = root:root:755
+          if rpm -q --requires btrfs-backup | grep -Ei 'libQt|libKF|plasma'; then
+            echo 'Base package must not require KDE or Qt' >&2
+            exit 1
+          fi
+          test -f /usr/lib64/qt6/plugins/kf6/kio/btrfsbackup.so

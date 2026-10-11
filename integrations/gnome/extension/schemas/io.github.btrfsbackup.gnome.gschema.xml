@@ -1,0 +1,15 @@
+<!-- SPDX-FileCopyrightText: 2026 Dawson <dawson@funkemunky.cc> -->
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<schemalist>
+  <schema id="io.github.btrfsbackup.gnome" path="/io/github/btrfsbackup/gnome/">
+    <key name="terminal-notifications" type="b"><default>true</default><summary>Notify when an observed run finishes</summary></key>
+    <key name="progress-notifications" type="b"><default>true</default><summary>Show ongoing backup progress</summary></key>
+    <key name="reminders" type="b"><default>true</default><summary>Remind about overdue backups</summary></key>
+    <key name="warning-days" type="i"><range min="1" max="3650"/><default>7</default><summary>Days before an overdue warning</summary></key>
+    <key name="critical-days" type="i"><range min="1" max="3650"/><default>30</default><summary>Days before an overdue critical notification</summary></key>
+    <key name="storage-notifications" type="b"><default>true</default><summary>Notify about low target space</summary></key>
+    <key name="storage-warning-percent" type="i"><range min="0" max="100"/><default>15</default><summary>Free space warning percentage</summary></key>
+    <key name="storage-critical-percent" type="i"><range min="0" max="100"/><default>5</default><summary>Free space critical percentage</summary></key>
+    <key name="notification-keys" type="as"><default>[]</default><summary>Recently delivered notifications</summary></key>
+  </schema>
+</schemalist>

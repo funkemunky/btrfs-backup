@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: 2026 Dawson <dawson@funkemunky.cc>
+# SPDX-License-Identifier: GPL-3.0-or-later
+[Desktop Entry]
+Type=Application
+Name=Btrfs Backup
+Comment=Manage backup profiles, browse previous versions and restore files
+Exec=btrfs-backup-gnome
+Icon=drive-harddisk
+Categories=GTK;GNOME;System;Archiving;
+Keywords=backup;btrfs;restore;snapshot;
+Terminal=false
+StartupNotify=true
