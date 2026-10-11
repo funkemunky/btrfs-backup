@@ -51,6 +51,25 @@ The base package installs the systemd and udev templates but does not enable a
 backup or create an active profile. The KDE package does not become a runtime
 dependency of unattended backups.
 
+## Install On Fedora 44
+
+Fedora 44 is the baseline for the Fedora RPM build pipeline. Build the base RPM
+and optional KDE RPM from a checkout using the
+[Fedora RPM guide](packaging/rpm/README.md), then install them with DNF:
+
+```bash
+version=$(cat VERSION)
+sudo dnf install \
+  "./dist/fedora/btrfs-backup-${version}-1.fc44.$(uname -m).rpm" \
+  "./dist/fedora/btrfs-backup-kde-${version}-1.fc44.$(uname -m).rpm"
+```
+
+The RPM includes the CLI, runner, D-Bus manager, systemd units and policy files.
+Create a profile explicitly after installation; no backup is enabled by package
+installation. For Fedora 44 source and optional Plasma development, see the
+[development instructions](docs/development.md#fedora-44-development) and
+[contribution guide](CONTRIBUTING.md#fedora-44-contributions).
+
 ## Quick Start
 
 ### KDE Plasma

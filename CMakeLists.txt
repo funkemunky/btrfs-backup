@@ -35,6 +35,10 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 include(CTest)
 include(GNUInstallDirs)
+set(BTRFSBACKUP_SYSTEMD_UNIT_DIR "${CMAKE_INSTALL_LIBDIR}/systemd/system"
+    CACHE PATH "Installation directory for systemd system units")
+set(BTRFSBACKUP_TMPFILES_DIR "${CMAKE_INSTALL_LIBDIR}/tmpfiles.d"
+    CACHE PATH "Installation directory for systemd tmpfiles declarations")
 include(cmake/TargetRestrictedIncludes.cmake)
 if(BUILD_TESTING)
     set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -193,14 +197,14 @@ install(
         "${CMAKE_CURRENT_BINARY_DIR}/btrfs-backup-eject@.service"
         "${CMAKE_CURRENT_BINARY_DIR}/btrfs-backup-validate@.service"
         "${CMAKE_CURRENT_BINARY_DIR}/btrfs-backup-target@.service"
-    DESTINATION "${CMAKE_INSTALL_LIBDIR}/systemd/system"
+    DESTINATION "${BTRFSBACKUP_SYSTEMD_UNIT_DIR}"
 )
 if(BUILD_SYSTEM_MANAGER)
     install(
         FILES
             "${CMAKE_CURRENT_BINARY_DIR}/btrfs-backupd.service"
             "${CMAKE_CURRENT_BINARY_DIR}/btrfs-backup-device-preparation@.service"
-        DESTINATION "${CMAKE_INSTALL_LIBDIR}/systemd/system"
+        DESTINATION "${BTRFSBACKUP_SYSTEMD_UNIT_DIR}"
     )
     install(
         FILES "${CMAKE_CURRENT_BINARY_DIR}/io.github.btrfsbackup.Manager1.service"
@@ -237,7 +241,7 @@ install(
 )
 install(
     FILES data/tmpfiles/btrfs-backup.conf
-    DESTINATION "${CMAKE_INSTALL_LIBDIR}/tmpfiles.d"
+    DESTINATION "${BTRFSBACKUP_TMPFILES_DIR}"
 )
 install(
     FILES "${BTRFS_BACKUP_GENERATED_MAN_DIR}/btrfs-backupctl.1"

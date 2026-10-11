@@ -19,8 +19,9 @@ import zipfile
 
 SOURCE_DIRECTORIES = ("LICENSES", "apps", "cmake", "data", "docs", "integrations", "packaging",
                       "src", "tests", "tools")
-SOURCE_FILES = ("VERSION", "README.md", "CHANGELOG.md", "TODO.md", "LICENSE", "REUSE.toml",
-                ".gitignore", "CMakeLists.txt", "CMakePresets.json", "Makefile")
+SOURCE_FILES = ("VERSION", "README.md", "CONTRIBUTING.md", "CHANGELOG.md", "ROADMAP.md",
+                "TODO.md", "LICENSE", "REUSE.toml", ".gitignore", "CMakeLists.txt",
+                "CMakePresets.json", "Makefile")
 
 
 def sha256(path: Path) -> str:

@@ -1,35 +1,62 @@
+# SPDX-FileCopyrightText: 2026 Kamil Piwowarski <kapiwko@gmail.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 Name:           btrfs-backup
 Version:        @VERSION@
 Release:        1%{?dist}
 Summary:        Verified Btrfs backups to an encrypted removable target
 License:        GPL-3.0-or-later
+URL:            https://github.com/kapiwko/btrfs-backup
 Source0:        %{name}-%{version}.tar.gz
 
-BuildRequires:  cmake, gcc-c++, nlohmann-json-devel, pkgconfig
+BuildRequires:  cmake, gcc-c++, make, nlohmann-json-devel, pkgconf-pkg-config
+BuildRequires:  python3, systemd-rpm-macros, systemd-udev
 BuildRequires:  pkgconfig(libacl), pkgconfig(blkid), pkgconfig(libcryptsetup), pkgconfig(fdisk)
-BuildRequires:  pkgconfig(libmount), pkgconfig(libsystemd), pkgconfig(libudev), pkgconfig(libbtrfsutil)
-Requires:       acl-libs, btrfs-progs >= 6.0, coreutils, cryptsetup, polkit, systemd, util-linux
+BuildRequires:  pkgconfig(mount), pkgconfig(libsystemd), pkgconfig(libudev), pkgconfig(libbtrfsutil)
+Requires:       btrfs-progs >= 6.0, coreutils, cryptsetup, polkit, systemd, systemd-udev, util-linux
 
 %description
 systemd and udev driven Btrfs send/receive backups with LUKS target validation,
-interrupted-run recovery, retention, and controlled eject.
+interrupted-run recovery, retention, and controlled eject. Includes the CLI,
+backup runner, privileged D-Bus manager and device-preparation helper.
 
 %prep
 %autosetup
 
 %build
-%cmake -DBUILD_KDE_INTEGRATION=OFF -DBUILD_TESTING=OFF -DCMAKE_INSTALL_SYSCONFDIR=/etc
+%cmake -DBUILD_KDE_INTEGRATION=OFF -DBUILD_SYSTEM_MANAGER=ON -DBUILD_TESTING=ON \
+    -DBTRFSBACKUP_ARCHITECTURE_TESTS=OFF -DCMAKE_INSTALL_SYSCONFDIR=%{_sysconfdir} \
+    -DBTRFSBACKUP_SYSTEMD_UNIT_DIR=%{_unitdir} -DBTRFSBACKUP_TMPFILES_DIR=%{_tmpfilesdir}
 %cmake_build
 
 %install
 %cmake_install
+# RPM carries the license separately from ordinary documentation.
+rm %{buildroot}%{_docdir}/%{name}/LICENSE
+
+%check
+# Upstream CI contracts need .github (omitted from source archives); generic
+# and Arch package-generation tests belong to the upstream release pipeline.
+%ctest --exclude-regex '^(release-workflow-contract-tests|release-builder-(package|arch|arch-order)-tests)$'
 
 %files
-%{_bindir}/btrfs-backup*
-%dir /etc/btrfs-backup
-%dir /etc/btrfs-backup/hooks.d
-%{_prefix}/lib/systemd/system/btrfs-backup*.service
-%{_datadir}/dbus-1/
+%license LICENSE
+%{_bindir}/btrfs-backup
+%{_bindir}/btrfs-backupctl
+%{_bindir}/btrfs-backupd
+%{_bindir}/btrfs-backup-device-preparation
+%dir %attr(0755,root,root) %{_sysconfdir}/btrfs-backup
+%dir %attr(0755,root,root) %{_sysconfdir}/btrfs-backup/hooks.d
+%{_unitdir}/btrfs-backup*.service
+%{_tmpfilesdir}/btrfs-backup.conf
+%{_datadir}/dbus-1/system-services/io.github.btrfsbackup.Manager1.service
+%{_datadir}/dbus-1/system.d/io.github.btrfsbackup.Manager1.conf
+%{_datadir}/dbus-1/interfaces/io.github.btrfsbackup.Manager1.xml
 %{_datadir}/polkit-1/actions/io.github.btrfsbackup.policy
 %{_datadir}/btrfs-backup/
-%{_docdir}/btrfs-backup/
+%doc %{_docdir}/%{name}/
+%{_mandir}/man1/btrfs-backupctl.1*
+%{_mandir}/man8/btrfs-backup.8*
+%{_datadir}/bash-completion/completions/btrfs-backup*
+%{_datadir}/zsh/site-functions/_btrfs-backup*
+%{_datadir}/fish/vendor_completions.d/btrfs-backup*.fish

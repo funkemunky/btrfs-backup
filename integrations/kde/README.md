@@ -78,6 +78,15 @@ cannot publish directly to a user's Plasma job tracker. `KNotification` remains
 appropriate for terminal success or failure messages; it is not the primary
 transport for continuously updated job progress.
 
+## Fedora 44 Development
+
+Install the Fedora 44 base and optional Plasma dependencies listed in the
+[development workflow](../../docs/development.md#fedora-44-development), then
+build with `cmake --preset kde-debug` and
+`cmake --build --preset kde-debug --parallel`. Run `ctest --preset kde --parallel`
+for desktop contract tests and use a Plasma 6 session for interactive checks.
+The Fedora RPM pipeline produces a separate optional `btrfs-backup-kde` package.
+
 ## Architecture
 
 The desktop integration is divided into six surfaces:

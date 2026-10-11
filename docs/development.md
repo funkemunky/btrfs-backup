@@ -29,6 +29,57 @@ cmake --build --preset kde-debug --parallel
 ctest --preset kde --parallel
 ```
 
+## Fedora 44 Development
+
+Fedora 44 is the baseline for Fedora builds. Install the base development and
+quality-check tools on a conventional Fedora 44 system:
+
+```bash
+sudo dnf install \
+  gcc-c++ clang clang-tools-extra cmake ninja-build make git python3 \
+  pkgconf-pkg-config nlohmann-json-devel btrfs-progs btrfs-progs-devel \
+  cryptsetup cryptsetup-devel libacl-devel libblkid-devel libmount-devel \
+  libfdisk-devel systemd-devel systemd-udev polkit
+```
+
+Use the `gcc-debug`, `clang-debug`, `architecture`, and sanitizer presets above;
+run `make quality` before submitting C++ changes. Tests run as an ordinary user.
+For package builds, install `rpm-build`, `systemd-rpm-macros`, and `dnf5-plugins`
+and follow the [Fedora RPM instructions](../packaging/rpm/README.md).
+
+For optional Plasma development, additionally install:
+
+```bash
+sudo dnf install \
+  extra-cmake-modules qt6-qtbase-devel qt6-qtdeclarative-devel \
+  kf6-kconfig-devel kf6-kcoreaddons-devel kf6-ki18n-devel \
+  kf6-kjobwidgets-devel kf6-kcmutils-devel kf6-knotifications-devel \
+  kf6-kpackage-devel kf6-kio-devel kf6-krunner-devel \
+  kf6-kservice-devel kf6-kwidgetsaddons-devel kf6-kirigami-devel libplasma-devel
+```
+
+Then use `kde-debug` and `ctest --preset kde`. Desktop smoke testing needs a
+Plasma 6 session. The Fedora RPM workflow builds both the base runtime and optional KDE RPM.
+
+Fedora uses `/usr/lib64` for native libraries and `/usr/lib` for systemd units
+and tmpfiles declarations. When staging an installation manually, configure:
+
+```bash
+cmake --preset gcc-debug \
+  -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib64 \
+  -DCMAKE_INSTALL_SYSCONFDIR=/etc \
+  -DBTRFSBACKUP_SYSTEMD_UNIT_DIR=/usr/lib/systemd/system \
+  -DBTRFSBACKUP_TMPFILES_DIR=/usr/lib/tmpfiles.d
+```
+
+Use `DESTDIR` with `cmake --install` to inspect a staged tree. Install the RPM
+with DNF for system testing. The `install-local` target installs Arch packages
+with pacman; Fedora contributors should use the RPM workflow instead.
+Keep SELinux enabled during runtime validation and include relevant AVC denials
+in bug reports. The container installation check does not exercise a booted
+systemd, SELinux policy, real backup devices, or restore recovery; use disposable
+VMs and the [integration testing guide](testing.md) for those checks.
+
 ## Architecture And Quality Gates
 
 Run the complete architecture contract with Clang:

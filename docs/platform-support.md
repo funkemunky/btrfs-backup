@@ -11,6 +11,7 @@ runtime and unattended backup path do not require KDE.
 |---|---|---|
 | Current Arch Linux, x86-64 | Reference | GCC and Clang builds, unit and contract tests, native package installation, real Btrfs/LUKS tests and QEMU/systemd hotplug tests |
 | Plasma 6 on current Arch Linux | Reference for the optional desktop package | KDE build and D-Bus contract tests; release smoke testing covers the plasmoid, KCM, notifications, Dolphin/KIO browsing and restore |
+| Fedora 44, x86-64 | Fedora packaging baseline | Native SRPM/RPM builds, unprivileged CTest and clean-container installation; booted-system backup/restore validation is still required |
 | Other current systemd-based Linux distributions | Compatible when the listed build and runtime dependencies are available | Compiler tests exercise portable C++ boundaries, but each distribution still needs package installation and restore testing |
 | Linux systems without systemd/udev | Manual use only | The CLI can inspect and restore an already mounted repository; automatic device activation and unattended runs require systemd and udev |
 | Non-Linux systems | Unsupported | The runtime depends on Linux mount, block-device, Btrfs, device-mapper and process interfaces |
@@ -27,7 +28,8 @@ restore run on that exact platform.
 |---|---|
 | Arch `pkg.tar.zst` base and KDE packages | Native reference packages; installed and exercised by release gates |
 | Source tarball and generic install tree | Maintained distribution-neutral artifacts; consumers provide compatible dependencies and integration |
-| DEB and RPM | Maintained compatibility packages; artifact layout and lifecycle scripts are tested, while distribution-specific runtime validation is required before claiming native support |
+| Fedora 44 RPM | Native spec and dedicated build/install CI; base runtime only |
+| DEB and generic CPack RPM | Maintained compatibility packages; artifact layout and lifecycle scripts are tested, while distribution-specific runtime validation is required before claiming native support |
 | Nix expression, Gentoo ebuild and standalone `PKGBUILD` | Best-effort packaging templates for downstream maintainers; generation is tested, not installation on those ecosystems |
 
 The exact dependencies and artifact contents are documented in

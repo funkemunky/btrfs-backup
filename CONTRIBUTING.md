@@ -12,7 +12,8 @@ potential vulnerability privately as described in [SECURITY.md](SECURITY.md).
 The [development workflow](docs/development.md) is the canonical map of local
 builds, quality gates, privileged integration tests and release commands.
 
-The primary development platform is Arch Linux. A source build needs CMake, a
+The reference development platform is Arch Linux; Fedora 44 is the baseline
+for Fedora development and RPM CI. A source build needs CMake, a
 C++23 compiler, `pkg-config`, `nlohmann-json`, and development files for
 `libmount`, `libblkid`, `libudev`, `libacl` and `libbtrfsutil`. On Arch Linux:
 
@@ -45,6 +46,24 @@ Enable the optional KDE integration explicitly:
 cmake --preset kde-debug
 cmake --build --preset kde-debug --target btrfs-backup-kde --parallel
 ```
+
+### Fedora 44 Contributions
+
+Install the Fedora dependency sets in the
+[development workflow](docs/development.md#fedora-44-development), then use the
+same GCC, Clang, KDE and quality presets described above. Build RPM changes with
+`python3 tools/build_fedora_rpm.py`; the spec runs the unprivileged CTest suite
+in `%check`. Build the optional KDE package with
+`python3 tools/build_fedora_kde_rpm.py`. See the
+[RPM guide](packaging/rpm/README.md) for build dependencies, SRPMs, Mock rebuilds
+and clean-container validation.
+
+The `Fedora RPM` workflow builds both packages on Fedora 44 and verifies their
+installation in a fresh Fedora 44 container for pushes and pull requests.
+Include the Fedora
+release, architecture, test results and any untested runtime behavior in your
+pull request. Packaging changes must preserve the base package's independence
+from Qt and KDE and keep administrator profiles untouched.
 
 ## Architecture
 
