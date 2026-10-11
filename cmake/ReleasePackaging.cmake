@@ -1,4 +1,5 @@
 # SPDX-FileCopyrightText: 2026 Kamil Piwowarski <kapiwko@gmail.com>
+# SPDX-FileCopyrightText: 2026 Dawson <dawson@funkemunky.cc>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 set(CPACK_PACKAGE_NAME "btrfs-backup")
@@ -16,6 +17,15 @@ set(CPACK_SET_DESTDIR ON)
 set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY ON)
 set(CPACK_COMPONENT_UNSPECIFIED_DISPLAY_NAME "Base")
 set(CPACK_COMPONENT_KDEINTEGRATION_DISPLAY_NAME "KDE integration")
+set(CPACK_COMPONENT_GNOMEINTEGRATION_DISPLAY_NAME "GNOME integration")
+set(CPACK_RPM_GNOMEINTEGRATION_PACKAGE_NAME "btrfs-backup-gnome")
+set(CPACK_RPM_GNOMEINTEGRATION_PACKAGE_REQUIRES
+    "btrfs-backup >= ${PROJECT_VERSION}, gnome-shell >= 50, gjs, python3-gobject, gtk4, libadwaita")
+set(CPACK_RPM_GNOMEINTEGRATION_PACKAGE_SUGGESTS "nautilus-python")
+set(CPACK_DEBIAN_GNOMEINTEGRATION_PACKAGE_NAME "btrfs-backup-gnome")
+set(CPACK_DEBIAN_GNOMEINTEGRATION_PACKAGE_DEPENDS
+    "btrfs-backup (>= ${PROJECT_VERSION}), gnome-shell (>= 50), gjs, python3-gi, gir1.2-gtk-4.0, gir1.2-adw-1")
+set(CPACK_DEBIAN_GNOMEINTEGRATION_PACKAGE_RECOMMENDS "python3-nautilus")
 set(CPACK_DEB_COMPONENT_INSTALL ON)
 set(CPACK_DEBIAN_UNSPECIFIED_PACKAGE_NAME "btrfs-backup")
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Kamil Piwowarski <kapiwko@gmail.com>")
@@ -40,5 +50,8 @@ set(CPACK_RPM_PACKAGE_REQUIRES
 set(CPACK_COMPONENTS_ALL Unspecified)
 if(BUILD_KDE_INTEGRATION)
     list(APPEND CPACK_COMPONENTS_ALL KDEIntegration)
+endif()
+if(BUILD_GNOME_INTEGRATION)
+    list(APPEND CPACK_COMPONENTS_ALL GNOMEIntegration)
 endif()
 include(CPack)

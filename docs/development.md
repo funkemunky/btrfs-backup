@@ -29,6 +29,18 @@ cmake --build --preset kde-debug --parallel
 ctest --preset kde --parallel
 ```
 
+For the GNOME 50 integration:
+
+```bash
+cmake --preset gnome-debug
+cmake --build --preset gnome-debug --target btrfs-backup-gnome --parallel
+ctest --preset gnome
+```
+
+Install GJS, Python GObject bindings, GTK 4 and libadwaita for this optional
+component. See [GNOME integration](gnome-integration.md) for installation,
+package inventory and disposable headless Shell checks.
+
 ## Fedora 44 Development
 
 Fedora 44 is the baseline for Fedora builds. Install the base development and

@@ -47,6 +47,18 @@ cmake --preset kde-debug
 cmake --build --preset kde-debug --target btrfs-backup-kde --parallel
 ```
 
+Enable the optional GNOME 50 integration with GJS, Python GObject bindings,
+GTK 4 and libadwaita installed:
+
+```bash
+cmake --preset gnome-debug
+cmake --build --preset gnome-debug --target btrfs-backup-gnome --parallel
+ctest --preset gnome
+```
+
+The [GNOME integration guide](docs/gnome-integration.md) describes component
+installation and the optional disposable Shell and GTK smoke checks.
+
 ### Fedora 44 Contributions
 
 Install the Fedora dependency sets in the
@@ -158,7 +170,7 @@ feat fix refactor perf test docs build ci chore style revert
 Use stable scopes when they clarify ownership:
 
 ```text
-backup config state platform cli kde dbus systemd udev packaging cmake ci docs
+backup config state platform cli kde gnome dbus systemd udev packaging cmake ci docs
 ```
 
 Examples:

@@ -109,6 +109,15 @@
       }
     },
     {
+      "name": "gnome-debug",
+      "displayName": "GCC debug build with GNOME 50 integration",
+      "inherits": "gcc-debug",
+      "binaryDir": "${sourceDir}/build/gnome-debug",
+      "cacheVariables": {
+        "BUILD_GNOME_INTEGRATION": "ON"
+      }
+    },
+    {
       "name": "kde-debug",
       "displayName": "GCC debug build with KDE integration",
       "inherits": "gcc-debug",
@@ -218,6 +227,10 @@
       "configurePreset": "kde-debug"
     },
     {
+      "name": "gnome-debug",
+      "configurePreset": "gnome-debug"
+    },
+    {
       "name": "kde-strict-warnings",
       "configurePreset": "kde-strict-warnings",
       "targets": [
@@ -298,6 +311,18 @@
       "filter": {
         "include": {
           "label": "fuzz"
+        }
+      },
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "gnome",
+      "configurePreset": "gnome-debug",
+      "filter": {
+        "include": {
+          "label": "gnome"
         }
       },
       "output": {

@@ -1,5 +1,13 @@
 # Building Release Artifacts
 
+The optional GNOME 50 component is enabled with
+`-DBUILD_GNOME_INTEGRATION=ON` and packaged independently as
+`btrfs-backup-gnome` using CPack's `GNOMEIntegration` component. Its runtime
+dependencies include GNOME Shell, GJS, Python GObject bindings, GTK 4 and
+libadwaita. The Files context action additionally needs Nautilus Python.
+The [GNOME integration guide](gnome-integration.md) lists its complete file
+inventory and install commands. Base packages keep these dependencies optional.
+
 Release-note structure, metadata preparation, tagging and GitHub publication
 are defined in [release notes and publication](releasing.md).
 

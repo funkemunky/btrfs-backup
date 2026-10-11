@@ -1,4 +1,5 @@
 # SPDX-FileCopyrightText: 2026 Kamil Piwowarski <kapiwko@gmail.com>
+# SPDX-FileCopyrightText: 2026 Dawson <dawson@funkemunky.cc>
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -89,4 +90,16 @@ path = [
 ]
 precedence = "closest"
 SPDX-FileCopyrightText = "2026 Kamil Piwowarski <kapiwko@gmail.com>"
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = ["CMakePresets.json", "CONTRIBUTING.md", "README.md", "docs/development.md", "docs/packaging.md"]
+precedence = "override"
+SPDX-FileCopyrightText = ["2026 Kamil Piwowarski <kapiwko@gmail.com>", "2026 Dawson <dawson@funkemunky.cc>"]
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = ["integrations/gnome/extension/metadata.json.in", "integrations/gnome/README.md", "docs/gnome-integration.md"]
+precedence = "override"
+SPDX-FileCopyrightText = "2026 Dawson <dawson@funkemunky.cc>"
 SPDX-License-Identifier = "GPL-3.0-or-later"

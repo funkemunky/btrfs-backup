@@ -4,9 +4,9 @@
 an encrypted removable disk. Connect the configured drive, let udev and systemd
 run the backup, then safely disconnect it when the job finishes.
 
-The core runtime works without a desktop. An optional KDE package adds setup in
-System Settings, live progress, notifications, backup browsing in Dolphin and a
-guided restore application.
+The core runtime works without a desktop. Optional KDE Plasma and GNOME 50
+integrations add profile and device setup, live progress, notifications,
+backup browsing, previous versions and guided restore.
 
 See the [platform support matrix](docs/platform-support.md) for the reference
 environment and the validation level of each package format.
@@ -188,6 +188,19 @@ The KDE package exposes the same engine through Dolphin, the read-only
 
 See [the recovery guide](docs/recovery.md) for complete plan and execute
 examples, repository layout details and disaster-recovery procedures.
+
+## GNOME 50 Desktop Integration
+
+The optional GNOME integration provides a top bar extension with per-profile
+backup controls, live transfer charts, notifications and Overview search.
+Its GTK companion manages profiles, sources, retention, credentials and device
+setup, displays history, and browses and restores backups. A Files context
+action opens previous versions for selected local entries.
+
+Build it with `cmake --preset gnome-debug` and
+`cmake --build --preset gnome-debug --target btrfs-backup-gnome --parallel`.
+See the [GNOME integration guide](docs/gnome-integration.md) for installation
+and validation. The base runtime remains independent of GNOME and GTK.
 
 ## KDE Desktop Integration
 

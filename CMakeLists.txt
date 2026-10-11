@@ -1,4 +1,5 @@
 # SPDX-FileCopyrightText: 2026 Kamil Piwowarski <kapiwko@gmail.com>
+# SPDX-FileCopyrightText: 2026 Dawson <dawson@funkemunky.cc>
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -44,6 +45,7 @@ if(BUILD_TESTING)
     set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 endif()
 option(BUILD_KDE_INTEGRATION "Build the optional KDE integration" OFF)
+option(BUILD_GNOME_INTEGRATION "Build the optional GNOME 50 integration" OFF)
 option(BUILD_README_SCREENSHOTS "Build helpers used to render README screenshots" OFF)
 option(BTRFSBACKUP_BUILD_FUZZERS "Build libFuzzer targets for untrusted inputs" OFF)
 option(
@@ -140,6 +142,9 @@ add_subdirectory(apps)
 
 if(BUILD_KDE_INTEGRATION)
     add_subdirectory(integrations/kde)
+endif()
+if(BUILD_GNOME_INTEGRATION)
+    add_subdirectory(integrations/gnome)
 endif()
 
 if(BUILD_TESTING)
